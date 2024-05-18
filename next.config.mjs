@@ -1,5 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+	reactStrictMode: false,
 	env: {
 		FB_APP_ID: process.env.FB_APP_ID,
 		FB_CONFIG_ID: process.env.FB_CONFIG_ID,

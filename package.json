@@ -4,24 +4,31 @@
 	"private": true,
 	"type": "module",
 	"scripts": {
-		"dev": "node server.js",
+		"dev": "node --experimental-specifier-resolution=node server.js",
 		"build": "next build",
 		"start": "NODE_ENV=production node server.js",
 		"lint": "next lint",
 		"format": "prettier --write --ignore-path .prettierignore \"**/*.{js,jsx,tsx}\""
 	},
 	"dependencies": {
+		"@aws-sdk/client-s3": "^3.577.0",
+		"@aws-sdk/lib-storage": "^3.578.0",
 		"@greatsumini/react-facebook-login": "^3.3.3",
 		"axios": "^1.6.8",
+		"cheerio": "^1.0.0-rc.12",
 		"dotenv": "^16.4.5",
+		"himalaya": "^1.1.0",
+		"mime-types": "^2.1.35",
 		"moment": "^2.30.1",
 		"mongodb": "^6.6.2",
 		"mongoose": "^8.3.5",
 		"next": "14.2.3",
+		"node-cron": "^3.0.3",
 		"prettier": "^3.2.5",
+		"puppeteer": "^22.9.0",
 		"react": "^18",
 		"react-dom": "^18",
-		"selfsigned": "^2.4.1"
+		"uuid": "^9.0.1"
 	},
 	"devDependencies": {
 		"postcss": "^8",

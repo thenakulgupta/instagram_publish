@@ -9,6 +9,6 @@ const settingSchema = new mongoose.Schema(
 );
 
 const Settings =
-	mongoose.models.Settings || mongoose.model("Settings", settingSchema);
+	mongoose?.models?.Settings || mongoose.model("Settings", settingSchema);
 
 export { Settings };

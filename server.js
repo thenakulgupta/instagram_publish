@@ -1,15 +1,10 @@
-import { createServer } from "https";
+import { createServer } from "http";
 import { parse } from "url";
 import next from "next";
-import fs from "fs";
 import "dotenv/config";
-import connectToMongoDB from "./dbConnection/connectDb.js";
-import path from "path";
-import { fileURLToPath } from "url";
-import { dirname } from "path";
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
+import connectToMongoDB from "./dbConnection/connectDb";
+import cron from "node-cron";
+import { uploadPendingVideos } from "./pages/api/post_reel";
 
 const dev = process.env.NODE_ENV !== "production";
 const app = next({ dev });
@@ -23,11 +18,7 @@ app.prepare().then(async () => {
 		}
 		await connectToMongoDB(uri);
 
-		const httpsOptions = {
-			key: fs.readFileSync(path.join(__dirname, "ssl/key.pem")),
-			cert: fs.readFileSync(path.join(__dirname, "ssl/cert.pem")),
-		};
-		const server = createServer(httpsOptions, (req, res) => {
+		const server = createServer((req, res) => {
 			const parsedUrl = parse(req.url, true);
 
 			handle(req, res, parsedUrl);
@@ -37,7 +28,11 @@ app.prepare().then(async () => {
 			console.error("Server error:", error);
 		});
 
-		server.listen(process.env.PORT || 3000, (err) => {
+		cron.schedule("*/5 * * * *", async () => {
+			await uploadPendingVideos();
+		});
+
+		server.listen(process.env.PORT || 3000, async (err) => {
 			if (err) throw err;
 			console.log(
 				`> Ready on http://localhost:${process.env.PORT || 3000}`

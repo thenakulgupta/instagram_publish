@@ -1,0 +1,52 @@
+name: Deploy to EC2 (PROD)
+
+on:
+    push:
+        branches:
+            - main
+
+env:
+    EC2_HOST: 13.232.20.173
+    EC2_USERNAME: ubuntu
+    PORT: 3000
+
+jobs:
+    deploy:
+        runs-on: ubuntu-latest
+
+        steps:
+            - name: Checkout code
+              uses: actions/checkout@v2
+
+            - name: Prepare .env file
+              run: |
+                  echo "PORT=${{ env.PORT }}" >> .env
+
+            - name: Zip the project
+              run: zip -r tk-instagram-publish.zip . -x "*.git*"
+
+            - name: Create SSH key file from GitHub secret
+              run: |
+                  mkdir -p ~/.ssh
+                  echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+                  chmod 600 ~/.ssh/id_rsa
+                  ssh-keyscan -H ${{ env.EC2_HOST }} >> ~/.ssh/known_hosts
+
+            - name: Copy ZIP file to EC2 instance
+              run: scp -i ~/.ssh/id_rsa -o "StrictHostKeyChecking=no" tk-instagram-publish.zip ${{ env.EC2_USERNAME }}@${{ env.EC2_HOST }}:/var/www
+
+            - name: SSH into EC2 and deploy
+              run: |
+                  ssh -i ~/.ssh/id_rsa -o "StrictHostKeyChecking=no" ${{ env.EC2_USERNAME }}@${{ env.EC2_HOST }} << 'ENDSSH'
+                  cd /var/www
+                  sudo rm -rf tk-instagram-publish
+                  mkdir tk-instagram-publish
+                  mv tk-instagram-publish.zip tk-instagram-publish
+                  cd tk-instagram-publish
+                  unzip tk-instagram-publish.zip
+                  rm tk-instagram-publish.zip
+                  sudo npm install
+                  npm run build
+                  pm2 start /var/www/tk-instagram-publish/ecosystem.config.cjs || pm2 restart tk-instagram-publish
+                  pm2 save
+                  ENDSSH

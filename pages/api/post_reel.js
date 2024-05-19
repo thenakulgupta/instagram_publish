@@ -54,7 +54,10 @@ export default async function handler(req, res) {
 	if (req.method === "POST") {
 		try {
 			const { video_url, reel_url } = req.body;
-			const caption = "Test Title";
+			const caption =
+				Math.random() < 0.5
+					? "Apki baar 400 paar 🇮🇳🇮🇳🇮🇳"
+					: "Apki baar phir Modi Sarkar 🇮🇳🇮🇳🇮🇳";
 			const accessToken = await getAccessToken();
 			if (!accessToken?.length) {
 				return res.status(401).json({ error: "Unauthorised" });

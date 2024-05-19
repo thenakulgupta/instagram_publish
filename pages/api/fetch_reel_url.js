@@ -64,7 +64,10 @@ export default async function handler(req, res) {
 	if (req.method === "POST") {
 		try {
 			const { reel } = req.body;
-			const browser = await launch({ headless: true });
+			const browser = await launch({
+				headless: true,
+				args: ["--no-sandbox", "--disable-setuid-sandbox"],
+			});
 			const page = await browser.newPage();
 			await page.goto(reel, {
 				waitUntil: "networkidle2",

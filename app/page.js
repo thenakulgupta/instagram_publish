@@ -1,5 +1,5 @@
 "use client";
-import { get_call, post_call } from "../utils/request";
+import { get_call, post_call } from "../utils/request.js";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 

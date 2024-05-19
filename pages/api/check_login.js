@@ -1,6 +1,6 @@
 import moment from "moment";
-import { Settings } from "../../models/settings";
-import { get_call } from "../../utils/request";
+import { Settings } from "../../models/settings.js";
+import { get_call } from "../../utils/request.js";
 
 export const getAccessToken = async () => {
 	const setting = await Settings.findOne();

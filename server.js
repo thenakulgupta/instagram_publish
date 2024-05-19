@@ -2,9 +2,9 @@ import { createServer } from "http";
 import { parse } from "url";
 import next from "next";
 import "dotenv/config";
-import connectToMongoDB from "./dbConnection/connectDb";
+import connectToMongoDB from "./dbConnection/connectDb.js";
 import cron from "node-cron";
-import { uploadPendingVideos } from "./pages/api/post_reel";
+import { uploadPendingVideos } from "./pages/api/post_reel.js";
 
 const dev = process.env.NODE_ENV !== "production";
 const app = next({ dev });

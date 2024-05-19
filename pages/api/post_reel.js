@@ -1,6 +1,6 @@
-import { getAccessToken } from "./check_login";
-import { get_call, post_call } from "../../utils/request";
-import { PublishedVideos } from "../../models/published_videos";
+import { getAccessToken } from "./check_login.js";
+import { get_call, post_call } from "../../utils/request.js";
+import { PublishedVideos } from "../../models/published_videos.js";
 
 const instaPageId = process.env.INSTA_PAGE_ID;
 const version = "v19.0";

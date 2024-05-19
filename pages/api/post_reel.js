@@ -5,6 +5,24 @@ import { PublishedVideos } from "../../models/published_videos.js";
 const instaPageId = process.env.INSTA_PAGE_ID;
 const version = "v19.0";
 
+const getReelStatus = async (id, accessToken, update) => {
+	const status =
+		(
+			await get_call(
+				`https://graph.facebook.com/${id}?fields=status_code&access_token=${accessToken}`
+			)
+		)?.data?.status_code || "";
+
+	if (status === "FINISHED") {
+		update.upload_status = "uploaded_locally";
+	} else if (["EXPIRED", "ERROR"].includes(status)) {
+		update.upload_status = "failed";
+	} else if (["PUBLISHED"].includes(status)) {
+		update.upload_status = "uploaded";
+	}
+	return update;
+};
+
 export const uploadPendingVideos = async () => {
 	const pending_videos = await PublishedVideos.find({
 		upload_status: { $in: ["pending", "uploaded_locally"] },
@@ -16,23 +34,8 @@ export const uploadPendingVideos = async () => {
 		}
 		await Promise.all(
 			pending_videos?.map(async (v) => {
-				let update = {};
 				const id = v?.insta_video_id;
-				const status =
-					(
-						await get_call(
-							`https://graph.facebook.com/${id}?fields=status_code&access_token=${accessToken}`
-						)
-					)?.data?.status_code || "";
-
-				if (status === "FINISHED") {
-					update = { upload_status: "uploaded_locally" };
-				} else if (["EXPIRED", "ERROR"].includes(status)) {
-					update = { upload_status: "failed" };
-				} else if (["PUBLISHED"].includes(status)) {
-					update = { upload_status: "uploaded" };
-				}
-
+				let update = await getReelStatus(id, accessToken, {});
 				if (update?.upload_status === "uploaded_locally") {
 					const publish = (
 						await post_call(
@@ -40,6 +43,7 @@ export const uploadPendingVideos = async () => {
 						)
 					)?.data;
 					const publish_id = publish?.id || "";
+					update = await getReelStatus(id, accessToken, {});
 					update.insta_video_publish_id = publish_id;
 				}
 				if (update?.upload_status?.length) {

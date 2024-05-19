@@ -28,7 +28,7 @@ app.prepare().then(async () => {
 			console.error("Server error:", error);
 		});
 
-		cron.schedule("*/5 * * * *", async () => {
+		cron.schedule("*/2 * * * *", async () => {
 			await uploadPendingVideos();
 		});
 

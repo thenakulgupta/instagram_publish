@@ -2,6 +2,7 @@
 import { get_call, post_call } from "../utils/request.js";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import { toast } from "react-toastify";
 
 const extractAccessToken = () => {
 	const hash = window.location.hash;
@@ -44,26 +45,29 @@ export default function Home() {
 	const uploadInstagramReel = async () => {
 		const reel_url = await navigator.clipboard.readText();
 		if (!reel_url?.length || !isValidHttpUrl(reel_url)) {
-			alert("Invalid URL");
+			toast.error("Invalid URL");
 			return;
 		}
 
 		try {
+			toast.info("Fetching Reel URL");
 			const data = (
 				await post_call("/api/fetch_reel_url", { reel: reel_url })
 			)?.data;
 			if (!data?.reel_url?.length) {
-				alert("Unable to fetch URL");
+				toast.error("Unable to fetch URL");
 				return;
 			}
 			const video_url = data?.reel_url;
 			try {
+				toast.info("Uploading Reel");
 				await post_call("/api/post_reel", { video_url, reel_url });
+				toast.success("Reel Uploaded");
 			} catch (error) {
-				alert("Unable to post reel");
+				toast.error("Unable to post reel");
 			}
 		} catch (error) {
-			alert("Unable to fetch URL");
+			toast.error("Unable to fetch URL");
 		}
 	};
 	const saveAccessToken = async (token, data_access_expiration_time) => {

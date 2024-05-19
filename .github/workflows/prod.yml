@@ -8,7 +8,7 @@ on:
 env:
     EC2_HOST: 13.232.20.173
     EC2_USERNAME: ubuntu
-    PORT: 3000
+    PORT: 3003
 
 jobs:
     deploy:

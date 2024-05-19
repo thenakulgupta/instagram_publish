@@ -21,6 +21,16 @@ jobs:
             - name: Prepare .env file
               run: |
                   echo "PORT=${{ env.PORT }}" >> .env
+                  echo "MONGODB_URI=${{ secrets.MONGODB_URI }}" >> .env
+                  echo "FB_APP_ID=${{ secrets.FB_APP_ID }}" >> .env
+                  echo "FB_CONFIG_ID=${{ secrets.FB_CONFIG_ID }}" >> .env
+                  echo "FB_PAGE_ID=${{ secrets.FB_PAGE_ID }}" >> .env
+                  echo "INSTA_PAGE_ID=${{ secrets.INSTA_PAGE_ID }}" >> .env
+                  echo "AWS_S3_ACCESS_KEY=${{ secrets.AWS_S3_ACCESS_KEY }}" >> .env
+                  echo "AWS_S3_ACCESS_SECRET=${{ secrets.AWS_S3_ACCESS_SECRET }}" >> .env
+                  echo "AWS_S3_BUCKET=${{ secrets.AWS_S3_BUCKET }}" >> .env
+                  echo "AWS_S3_REGION=${{ secrets.AWS_S3_REGION }}" >> .env
+                  echo "AWS_S3_URL=${{ secrets.AWS_S3_URL }}" >> .env
 
             - name: Zip the project
               run: zip -r tk-instagram-publish.zip . -x "*.git*"

@@ -1,4 +1,4 @@
-import { Settings } from "@/models/settings";
+import { Settings } from "../../models/settings.js";
 
 export default async function handler(req, res) {
 	if (req.method === "POST") {

@@ -10,6 +10,7 @@ export const getAccessToken = async () => {
 			? setting.access_token
 			: "";
 	try {
+		if (!access_token?.length) return null;
 		await get_call(
 			`https://graph.facebook.com/v19.0/me/accounts?access_token=${access_token}`
 		);
